@@ -1,5 +1,5 @@
 import { Stack, Typography } from "@mui/material"
-import { MenuItem } from "../models/models"
+import { MenuItem } from "../../models/models"
 
 interface MenuItemDisplayProps {
     menuItem: MenuItem

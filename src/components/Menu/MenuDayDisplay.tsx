@@ -1,7 +1,5 @@
-// display 3 meals for the day: breakfast, lunch, dinner
-
-import { Card, CardContent, Paper, Stack, Typography } from "@mui/material"
-import { Day, type MenuDay } from "../models/models"
+import { Card, CardContent, Stack, Typography } from "@mui/material"
+import { Day, type MenuDay } from "../../models/models"
 import MenuItemDisplay from "./MenuItemDisplay"
 
 interface MenuDayProps {

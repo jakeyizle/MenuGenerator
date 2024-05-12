@@ -1,8 +1,6 @@
-import { useEffect, useState } from "react"
-import { generateMenu } from "../helpers/menuGenerator"
 import MenuDayDisplay from "./MenuDayDisplay"
 import Grid from "@mui/material/Unstable_Grid2/Grid2"
-import { Menu } from "../models/models"
+import { Menu } from "../../models/models"
 
 interface MenuDisplayProps {
     menu: Menu
