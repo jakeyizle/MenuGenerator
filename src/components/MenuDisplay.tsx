@@ -15,13 +15,13 @@ export default function MenuDisplay({ menu }: MenuDisplayProps) {
         for (let i = 0; i < 7; i++) {
             const menuDay = menu.find(item => item.day === i)!
             menuDays.push(
-                <Grid key={i} xs={1.5}>
+                <Grid key={i} xs={1.7}>
                     <MenuDayDisplay key={i} menuDay={menuDay} />
                 </Grid>
             )
         }
         return (
-            <Grid container spacing={2}>
+            <Grid container spacing={1}>
                 {menuDays}
             </Grid>
         )
