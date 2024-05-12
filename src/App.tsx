@@ -1,12 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import { Typography } from '@mui/material';
-import MenuDisplay from './components/MenuDisplay';
+import MenuIngredientDisplay from './components/MenuIngredientDisplay';
 
 function App() {
 
-
   return (
-    <MenuDisplay></MenuDisplay>
+    <MenuIngredientDisplay></MenuIngredientDisplay>
   );
 }
 

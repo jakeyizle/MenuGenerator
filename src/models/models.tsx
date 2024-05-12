@@ -2,6 +2,7 @@ export type Ingredient = {
     name: string
     amount: number
     unit: string
+    [key: string]: any;
 }
 
 export type Recipe = {
@@ -11,7 +12,6 @@ export type Recipe = {
 
 export type MealType = 'Breakfast' | 'Lunch' | 'Dinner'
 
-// export type Day = 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' | 'sunday'
 export enum Day {
     'Monday' = 0,
     'Tuesday' = 1,
