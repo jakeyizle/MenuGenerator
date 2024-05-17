@@ -4,6 +4,7 @@ import AppBar from '@mui/material/AppBar';
 
 import { useState } from 'react';
 import DrawerNav from './components/DrawerNav';
+import { ManageRecipes } from './components/ManageRecipes/ManageRecipes';
 
 
 const drawerWidth = 240;
@@ -20,7 +21,7 @@ function App() {
       case "Menu":
         return <MenuIngredientDisplay></MenuIngredientDisplay>
       case "Manage Recipes":
-        return <div>Manage Recipes</div>
+        return <ManageRecipes />
       case "About":
         return <div>About</div>
       default:

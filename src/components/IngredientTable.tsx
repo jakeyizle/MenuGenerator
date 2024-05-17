@@ -19,8 +19,7 @@ export const IngredientTable = (props: IngredientTableProps) => {
                 <TableHead>
                     <TableRow>
                         <TableCell colSpan={2}>Ingredient</TableCell>
-                        <TableCell align="right" colSpan={1}>Amount</TableCell>
-                        <TableCell align="right" colSpan={1}>Unit</TableCell>
+                        <TableCell align="right" colSpan={1}>Quantity</TableCell>                    
                     </TableRow>
                 </TableHead>
                 <TableBody>

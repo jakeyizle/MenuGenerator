@@ -1,16 +1,29 @@
+import { BackdropProps } from "@mui/material";
+
 export type Ingredient = {
     name: string
-    amount: number
-    unit: string
+    quantity: number
     [key: string]: any;
 }
 
 export type Recipe = {
     name: string
     ingredients: Ingredient[]
+    validMealTypes?: ValidMealTypes
+    mealNumber?: number 
 }
 
-export type MealType = 'Breakfast' | 'Lunch' | 'Dinner'
+export type MealType = 'Breakfast' | 'Lunch' | 'Dinner' | 'Snack' | 'Dessert'
+
+export type ValidMealTypes = {
+    breakfast: boolean,
+    lunch: boolean,
+    dinner: boolean,
+    snack: boolean,
+    dessert: boolean,
+    [key: string]: boolean
+};
+
 
 export enum Day {
     'Monday' = 0,
