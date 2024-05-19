@@ -18,8 +18,42 @@ export const getRecipeNames = async () => {
     return await localForage.keys()
 }
 
+export const getRecipe = async (name: string) => {
+    return await localForage.getItem<Recipe>(name)
+}
 
-export const addRecipe = (formData: FormData) => {
+export const upsertRecipe = async (formData: FormData, defaultName?: string) => {
+    try {
+        const recipe = extractRecipeFromFormData(formData)
+        if (defaultName) {
+            recipe.name = defaultName
+        }
+        await localForage.setItem(recipe.name, recipe)
+        return true
+    }
+    catch (e) {
+        console.log(e)
+        return false
+    }
+}
+
+export const isRecipeUnique = async (formData: FormData) => {
+    const name = formData.get('recipeName') as string
+    return !(await localForage.getItem(name))
+}
+
+export const deleteRecipe = async (name: string) => {
+    try {
+        await localForage.removeItem(name)
+        return true
+    }
+    catch (e) {
+        console.log(e)
+        return false
+    }
+}
+
+const extractRecipeFromFormData = (formData: FormData): Recipe => {
     const name = formData.get('recipeName') as string
     const mealNumber = formData.get('meals') as string
     let currentIngredient = {
@@ -49,12 +83,11 @@ export const addRecipe = (formData: FormData) => {
         dessert: !!formData.get('dessert'),
     }
 
-    const recipe = {
+    return {
         name,
         mealNumber: mealNumber ? parseInt(mealNumber) : 0,
         ingredients,
         validMealTypes,
-    }    
-    localForage.setItem(recipe.name, recipe)    
+    }
 }
 

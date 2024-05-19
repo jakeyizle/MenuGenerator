@@ -1,4 +1,3 @@
-import { BackdropProps } from "@mui/material";
 
 export type Ingredient = {
     name: string

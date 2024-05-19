@@ -1,23 +1,33 @@
-import { Add, Remove } from '@mui/icons-material';
-import { FormGroup, Grid, IconButton, TextField } from '@mui/material';
-import { ReactElement, useEffect, useMemo, useState } from 'react';
+import { Add } from '@mui/icons-material';
+import { Grid, IconButton } from '@mui/material';
+import { useMemo, useState } from 'react';
 import IngredientInput from './IngredientInput';
 import { Ingredient } from '../../models/models';
 
 
-const initialKeys = [new Date().getTime()]
-export default function IngredientForm() {
-    const [ingredientKeys, setIngredientKeys] = useState(initialKeys);
+const initialKeys = [new Date().getTime().toString()]
+
+interface IngredientFormProps {
+    ingredients: Ingredient[];
+}
+
+export default function IngredientForm({ ingredients }: IngredientFormProps) {
+    const [ingredientKeys, setIngredientKeys] = useState<string[]>(ingredients.length > 0 ? ingredients.map((ingredient) => ingredient.name) : initialKeys);
 
     const ingredientInputs = useMemo(() => {
-        const handleDeleteIngredient = (key: number) => {
+        const handleDeleteIngredient = (key: string) => {
             setIngredientKeys(ingredientKeys.filter(k => k !== key));
         }
-
         return ingredientKeys.map((key) => {
-            return <IngredientInput key={key} nameSuffix={key.toString()} onDelete={() => handleDeleteIngredient(key)} renderDeleteButton={ingredientKeys.length > 1} />
+            const defaultName = ingredients.find((ingredient) => ingredient.name === key)?.name
+            const defaultQuantity = ingredients.find((ingredient) => ingredient.name === key)?.quantity
+            return <IngredientInput key={key}
+                defaultName={defaultName} defaultQuantity={defaultQuantity}
+                nameSuffix={key.toString()}
+                onDelete={() => handleDeleteIngredient(key)}
+                renderDeleteButton={ingredientKeys.length > 1} />
         })
-    }, [ingredientKeys])
+    }, [ingredientKeys, ingredients])
 
     const renderAddButton = () => {
         return (
@@ -30,7 +40,7 @@ export default function IngredientForm() {
     }
 
     const handleNewIngredient = () => {
-        const key = new Date().getTime();
+        const key = new Date().getTime().toString();
         setIngredientKeys([...ingredientKeys, key]);
     }
 

@@ -1,8 +1,11 @@
-import { Checkbox, FormControl, FormControlLabel, FormGroup, Grid, Stack } from "@mui/material"
+import { Checkbox, FormControlLabel, Grid, Stack } from "@mui/material"
+import { ValidMealTypes } from "../../models/models"
 
+interface MealTypeCheckboxGroupProps {  
+    validMealTypes?: ValidMealTypes
+}
 
-
-export default function MealTypeCheckboxGroup() {
+export default function MealTypeCheckboxGroup({ validMealTypes }: MealTypeCheckboxGroupProps) {
 
     return (
         <Stack spacing={2}>

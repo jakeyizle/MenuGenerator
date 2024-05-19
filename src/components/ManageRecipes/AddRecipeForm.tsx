@@ -1,37 +1,63 @@
-import { Label } from "@mui/icons-material";
-import { Box, Button, ButtonGroup, Dialog, DialogActions, DialogContent, DialogTitle, Divider, Grid, IconButton, Modal, Stack, TextField, Typography } from "@mui/material";
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Divider, Grid, TextField } from "@mui/material";
 import { useState } from "react";
-import { Add } from "@mui/icons-material";
 import IngredientForm from "./IngredientForm";
-import MealTypePicker from "./MealTypePicker";
-import { Ingredient, ValidMealTypes } from "../../models/models";
+import { Recipe } from "../../models/models";
 import MealTypeCheckboxGroup from "./MealTypeCheckboxGroup";
-import { addRecipe } from "../../database/database";
+import { upsertRecipe, isRecipeUnique } from "../../database/database";
+import DeleteIcon from '@mui/icons-material/Delete';
 // a recipe has 1 name, n number of ingredients, and has at least 1 meal type (breakfast, lunch, dinner)
 
 interface AddRecipeFormProps {
     isOpen: boolean,
     onClose: (submit?: boolean) => void
+    recipe?: Recipe
+    onDelete?: () => void
 }
 
-export default function AddRecipeForm({ isOpen, onClose }: AddRecipeFormProps) {
+export default function AddRecipeForm({ isOpen, onClose, recipe, onDelete }: AddRecipeFormProps) {
+    const [uniqueNameError, setUniqueNameError] = useState(false)
+    const dialogTitle = recipe ? 'Edit Recipe' : 'Add Recipe'
+    const isEditForm = !!recipe
+    const defaultRecipeName = isEditForm ? recipe.name : ''
+    const defaultMealNumber = isEditForm ? recipe.mealNumber : 1
+    const defaultIngredients = isEditForm ? recipe.ingredients : []
+    const defaultValidMealTypes = isEditForm ? recipe.validMealTypes : undefined
+
+    const handleClose = () => {
+        onClose(false)
+        setUniqueNameError(false)
+    }
+
     return (
-        <Dialog open={isOpen} onClose={() => onClose(false)} PaperProps={{
+        <Dialog open={isOpen} onClose={handleClose} PaperProps={{
             component: 'form',
             onSubmit: (e: any) => {
                 e.preventDefault()
-                addRecipe(new FormData(e.currentTarget))                
-                onClose(true)
+                const form = new FormData(e.currentTarget)
+                if (isEditForm) {
+                    upsertRecipe(form, defaultRecipeName).then(() => onClose(true))
+                } else {
+                    isRecipeUnique(form).then((isUnique) => {
+                        if (!isUnique) {
+                            setUniqueNameError(true)
+                            return
+                        }
+                        upsertRecipe(form).then(() => onClose(true))
+                    })
+                }
+
             }
         }}>
-            <DialogTitle>Add Recipe</DialogTitle>
+            <DialogTitle>{dialogTitle}</DialogTitle>
             <DialogContent dividers={true}>
                 <Grid container spacing={2}>
                     <Grid item xs={6}>
-                        <TextField id="recipe-name" label="Name" name="recipeName" type="name" variant="outlined" required />
+                        <TextField id="recipe-name" label="Name" name="recipeName" type="name" variant="outlined" required
+                            defaultValue={defaultRecipeName} disabled={isEditForm}
+                            error={uniqueNameError} helperText={uniqueNameError && "Name must be unique"} onClick={() => setUniqueNameError(false)} />
                     </Grid>
                     <Grid item xs={2}>
-                        <TextField id="number-meals" label="Meals" name="meals" variant="outlined" type="number" defaultValue={1}
+                        <TextField id="number-meals" label="Meals" name="meals" variant="outlined" type="number" defaultValue={defaultMealNumber}
                             required
                             inputProps={{ min: 1 }}
                             InputLabelProps={{
@@ -40,13 +66,19 @@ export default function AddRecipeForm({ isOpen, onClose }: AddRecipeFormProps) {
                     </Grid>
                 </Grid>
                 <Divider>Ingredients</Divider>
-                <IngredientForm key="form" ></IngredientForm>
+                <IngredientForm ingredients={defaultIngredients} key="form" ></IngredientForm>
                 <Divider>Meals</Divider>
-                <MealTypeCheckboxGroup />
+                <MealTypeCheckboxGroup validMealTypes={defaultValidMealTypes} />
             </DialogContent>
             <DialogActions>
-                <Button onClick={() => onClose(false)}>Cancel</Button>
-                <Button type="submit">Add</Button>
+                {isEditForm && <Grid container>
+                    <Button variant="outlined" startIcon={<DeleteIcon />}
+                        onClick={onDelete}>Delete</Button>
+                </Grid>}
+                <Button variant="outlined" onClick={() => onClose(false)}>Cancel</Button>
+
+                <Button variant="contained" type="submit">Save</Button>
+
             </DialogActions>
         </Dialog >
     )
