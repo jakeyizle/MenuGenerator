@@ -21,7 +21,7 @@ export default function AddRecipeForm({ isOpen, onClose, recipe, onDelete }: Add
     const defaultRecipeName = isEditForm ? recipe.name : ''
     const defaultMealNumber = isEditForm ? recipe.mealNumber : 1
     const defaultIngredients = isEditForm ? recipe.ingredients : []
-    const defaultValidMealTypes = isEditForm ? recipe.validMealTypes : undefined
+    const defaultValidMealTypes = isEditForm ? recipe.validMealTypes : {breakfast: true, lunch: true, dinner: true, snack: false, dessert: false}
 
     const handleClose = () => {
         onClose(false)

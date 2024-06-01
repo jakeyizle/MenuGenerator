@@ -1,11 +1,11 @@
 // landing point for CRUD operations on recipes
 
 import { useEffect, useState } from "react";
-import { deleteRecipe, getRecipe, getRecipeNames } from "../../database/database";
-import { Box, IconButton, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Typography } from "@mui/material";
+import { deleteRecipe, getRecipe, getRecipes } from "../../database/database";
+import { IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
 import AddRecipeForm from "./AddRecipeForm";
 import Grid from "@mui/material/Unstable_Grid2/Grid2";
-import { AddCircleOutline, RestaurantMenu } from "@mui/icons-material";
+import { AddCircleOutline, Edit,  } from "@mui/icons-material";
 import { Recipe } from "../../models/models";
 interface ManageRecipesProps {
 
@@ -13,13 +13,13 @@ interface ManageRecipesProps {
 
 
 export const ManageRecipes = (props: ManageRecipesProps) => {
-    const [recipeNames, setRecipeNames] = useState<string[]>();
+    const [recipes, setRecipes] = useState<Recipe[]>();
     const [fetchCounter, setFetchCounter] = useState(0);
     const [addModalOpen, setAddModalOpen] = useState(false);
     const [selectedRecipe, setSelectedRecipe] = useState<Recipe>();
     useEffect(() => {
         const fetchRecipes = async () => {
-            setRecipeNames(await getRecipeNames())
+            setRecipes(await getRecipes())
         }
         fetchRecipes()
     }, [fetchCounter])
@@ -54,20 +54,42 @@ export const ManageRecipes = (props: ManageRecipesProps) => {
         })
     }
 
-    const renderRecipes = () => {
-        if (!recipeNames) {
-            return <Typography variant="subtitle1">No recipes found</Typography>
-        }
-        return recipeNames.map((name) => {
+    const renderTableRecipes = () => {
+        return recipes?.map((recipe) => {
             return (
-                <ListItem key={name}>
-                    <ListItemButton onClick={() => { handleListClick(name) }}>
-                        <ListItemIcon><RestaurantMenu /></ListItemIcon>
-                        <ListItemText primary={name} />
-                    </ListItemButton>
-                </ListItem>
+                <TableRow key={recipe.name}>
+                    <TableCell><IconButton onClick={() => { handleListClick(recipe.name) }}><Edit /></IconButton>{recipe.name}</TableCell>
+                    <TableCell>
+                        {recipe.mealNumber ?? 0}
+                    </TableCell>
+                    <TableCell>
+                        {recipe.ingredients?.length ?? 0}
+                    </TableCell>
+                </TableRow>
             )
         })
+    }
+
+    const renderRecipeTable = () => {
+        if (!recipes) {
+            return <Typography variant="subtitle1">No recipes found</Typography>
+        }
+        return (
+            <TableContainer component={Paper}>
+                <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                    <TableHead>
+                        <TableRow>
+                            <TableCell>Recipe Name</TableCell>
+                            <TableCell>Meal Count</TableCell>
+                            <TableCell># of Ingredients</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {renderTableRecipes()}
+                    </TableBody>
+                </Table>
+            </TableContainer>
+        )
     }
 
     return (
@@ -82,11 +104,8 @@ export const ManageRecipes = (props: ManageRecipesProps) => {
                     <IconButton onClick={handleAddClick}><AddCircleOutline /></IconButton>
                 </Grid>
             </Grid>
-            <Box sx={{ width: '50%', maxWidth: 360, bgcolor: 'background.paper' }}>
-                <List>
-                    {renderRecipes()}
-                </List>
-            </Box>
+
+            {renderRecipeTable()}
         </>
     )
 }
