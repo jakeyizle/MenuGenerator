@@ -7,7 +7,6 @@ interface MenuDayProps {
 }
 
 export default function MenuDayDisplay({ menuDay }: MenuDayProps) {
-
     const renderMenuItems = () => {
 
         const breakfast = menuDay.menuItems.find(item => item.mealType === "Breakfast")

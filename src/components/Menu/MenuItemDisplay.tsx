@@ -10,10 +10,10 @@ export default function MenuItemDisplay({ menuItem }: MenuItemDisplayProps) {
     return (
         <Stack spacing={0}>
             <Typography variant="subtitle2">
-                {menuItem.mealType}
+                {menuItem?.mealType}
             </Typography>
             <Typography variant="subtitle1">
-                {menuItem.recipe.name}
+                {menuItem?.recipe.name}
             </Typography>
         </Stack>
     )
